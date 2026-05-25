@@ -1,0 +1,117 @@
+Game Boy Cell Phone Cartridge Project: Design Overview
+
+Goal:
+Build a fully self-contained cell phone inside a Game Boy cartridge that functions independently as a phone. When plugged into a Game Boy, the console acts as a dumb terminal/interface to manage calls, texts, and phone status.
+
+Core Hardware Design
+
+    Custom Cartridge:
+
+        Houses all the phone electronics and power.
+
+        Key components:
+
+            Cellular module (e.g., SIM800L or SIM7000G for 2G/4G calling and SMS),
+
+            Microcontroller (e.g., RP2040) to manage:
+
+                Cellular control (AT commands),
+
+                Communication with the Game Boy bus,
+
+                Audio routing and logic.
+
+            Battery (~1000mAh LiPo),
+
+            Charge circuit and protection,
+
+            Optional Bluetooth module (for wireless audio or headset support).
+
+    Audio Path:
+
+        Incoming and outgoing audio routed through:
+
+            Game Boy speaker and a hacked-in microphone,
+
+            Or via Bluetooth for higher-quality calls.
+
+    Power:
+
+        Fully self-powered by the cartridge battery.
+
+        Game Boy functions only as a UI and does not power the phone.
+
+    Custom Cartridge Shell:
+ 
+	     Designed larger (thicker) than a standard cartridge (~20mm deep) to fit:
+
+            Battery,
+
+            Cellular hardware,
+
+            Antennas,
+
+            Ports (such as micro-USB for charging).
+
+Software/Firmware Design:
+
+    Cartridge Firmware (Embedded):
+
+	     Written in C (RP2040 SDK).
+
+        Responsibilities:
+
+            Phone functionality (calls, texts, signal strength),
+
+            Exposing status bytes to the Game Boy via specific memory addresses (e.g., addresses 0xA000 through 0xA010),
+
+            Accepting commands (dial, answer, hang up) from the Game Boy.
+
+    Game Boy UI (Terminal Program):
+
+        Written in C using GBDK-2020 (Game Boy Development Kit).
+
+        Displays:
+
+            Signal strength bars,
+
+            Phone status (Idle, Incoming Call, In Call, and so on),
+
+            Caller ID information.
+
+        Button mappings:
+
+            Start: Answer call,
+
+            Select: Hang up,
+
+            A/B: Dial or back.
+
+    Communication Protocol:
+
+        The Game Boy reads and writes via the cartridge memory-mapped registers:
+        Memory  Address Function
+        0xA000	 Signal Strength (0-5 bars)
+        0xA001	 Phone Status (Idle, Incoming Call, In Call, etc.)
+        0xA002  Caller ID / Text Buffer
+        0xA010	 Command Buffer (Dial, Hang Up)
+
+    Mock Development Mode:
+
+        While building the UI, simulated status data will be used initially (no hardware required).
+
+        Allows UI development and testing to progress before the hardware is ready.
+
+Next Steps:
+
+    Set up GBDK and an emulator (mGBA),
+
+    Build and test a mock UI app using simulated phone data,
+
+    Begin prototyping the hardware (RP204 and cellular module),
+
+    Design and 3D print a prototype jumbo cartridge shell.
+
+Big Picture:
+A completely custom retro-futuristic device that merges vintage hardware with modern cellular technology. The Game Boy-powered cell phone will operate with the cartridge functioning as the phone itself, and the console serving as the user interface.
+
